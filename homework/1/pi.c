@@ -71,6 +71,8 @@ void main(){
 
   //int ID = 0;
 
+  //omp_set_num_threads(6);
+
 #pragma omp parallel for private(aux) reduction (+:sum)
   for(int i=0; i<=k_max; i++){
 
