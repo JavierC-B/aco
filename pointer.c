@@ -2,20 +2,39 @@
 
 int main(){
 
-  int var = 5;
+  int* pc, c;
+
+  c = 22;
   
-  printf("\nvar: %d\n",var);
-  printf("address of var: %p\n",&var);
+  printf("\nAddress of c: %p\n",&c);
+  printf("Value of c: %d\n\n",c);
 
+  pc = &c;
 
-  double * pc;
+  printf("\nAddress of pointer pc: %p\n",pc);
+  printf("Content of pointer pc: %d\n\n",*pc);
 
-  pc = &var;
+  c = 11;
 
-  //printf("\n%d \n", *pc);
+  printf("\nAddress of pointer pc: %p\n",pc);
+  printf("Content of pointer pc: %d\n\n",*pc);
 
-  printf("address %p\n",pc);
-  printf("address %p\n",&var);
+  *pc = 2;
+
+  printf("\nAddress of c: %p\n",&c);
+  printf("Value of c: %d\n\n",c);
+
+  pc = &c;
+  *pc = c;
+
+  printf("Address: %p\n",pc);
+  printf("Value: %d\n",*pc);
+
+  //pc = 0x00000000;
+
+  //printf("%d\n",*pc);
   
+
   return 0;
+ 
 }
