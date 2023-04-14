@@ -9,8 +9,5 @@
 #include <time.h>
 
 void main(int argc, char **argv)
-{
-  printf("argc = %d, argv = %d\n",argc,atoi(argv[1]));
-
-  
+{ 
 }
