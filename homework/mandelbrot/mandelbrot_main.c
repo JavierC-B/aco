@@ -1,4 +1,5 @@
 // gcc -o mandelbrot_main mandelbrot_main.c -fopenmp -lm
+//make clean; make test00
 #include <math.h>
 #include <stdint.h>
 #include <stddef.h>
