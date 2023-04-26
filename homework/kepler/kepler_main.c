@@ -28,19 +28,17 @@ void main(int argc, char **argv)
   //=================================================================================================//
 
   
-  int i;                      //loop counter
-  int N_steps;                //# of integration steps
+  int i;                             //loop counter
+  int N_steps;                       //# of integration steps
 
-  double alpha;               //prefactor of the rhs
-  double r_e[2];              //to store the 2 position dimensions (0 -> x | 1 -> y)
-  double v_e[2];              //to store the 2 velocity dimensions (0 -> v_x | 1 -> v_y)
-  double aux[2];              //to help with the integration syntax
-  double dt;                  //time step between each integration
-  double t_final;             //final time at which integration stops
+  double r_lf[2], r_rk[2];           //to store the 2 position dimensions (0 -> x | 1 -> y)
+  double v_lf[2], v_rk[2];           //to store the 2 velocity dimensions (0 -> v_x | 1 -> v_y)
+  double dt;                         //time step between each integration
+  double t_final;                    //final time at which integration stops
 
-  time_t wt_start, wt_end;    //to keep track of wall-time
+  time_t cpu_start, cpu_end;         //to keep track of wall-time
 
-  FILE *out_LF, *out_RK;
+  FILE *out_LF, *out_RK;             //to write the output
 
 
   //=================================================================================================//
@@ -50,15 +48,15 @@ void main(int argc, char **argv)
 
   //start timing
 
-  //wt_start = time(NULL);
+  cpu_start = clock();
 
   //how to execute
 
   if(argc != 3){
 
-    fprintf(stderr,"\nPlease, execute in the following way:\n\n");
-    fprintf(stderr,"./kepler_main INTEGRATION_TIME[yrs] NINTEGRATION_STEPS\n\n");
-    fprintf(stderr,"Aborting now...\n");
+    fprintf(stderr,"\n Please, execute in the following way:\n\n");
+    fprintf(stderr," ./kepler_main INTEGRATION_TIME[yrs] NINTEGRATION_STEPS\n\n");
+    fprintf(stderr," Aborting now...\n");
 
     exit(0);
     
@@ -71,69 +69,71 @@ void main(int argc, char **argv)
 
   //size of integration step
 
-  dt = t_final/(N_steps-1)*365*24*3600;    //s
+  dt = t_final/(N_steps-1)*365*24*3600;       //s
 
   //show info in terminal
-
   fprintf(stderr,"\n     ====================   Keplerian Earth's motion around the Sun   ====================\n");
-  fprintf(stderr,"\nTime of integration: %lf [yrs]\n",t_final);
-  fprintf(stderr,"Number of integration steps: %d\n",N_steps);
-  fprintf(stderr,"Size of integration step: %lf [days]\n",dt/3600/24);
+  fprintf(stderr,"\n Time of integration: %lf [yrs]\n",t_final);
+  fprintf(stderr," Number of integration steps: %d\n",N_steps);
+  fprintf(stderr," Size of integration step: %lf [days]\n",dt/3600/24);
   fprintf(stderr,"\n     =====================================================================================\n");
 
   //set initial conditions
 
-  r_e[0] = X_INIT;         //AU
-  r_e[1] = Y_INIT;         //AU
+  r_lf[0] = X_INIT;         
+  r_lf[1] = Y_INIT;         
 
-  v_e[0] = VX_INIT;        //AU/s
-  v_e[1] = VY_INIT;        //AU/s
+  v_lf[0] = VX_INIT;        
+  v_lf[1] = VY_INIT;
 
-  //write to data file (position in [AU] and velocity in [km/s])
+  r_rk[0] = X_INIT;         
+  r_rk[1] = Y_INIT;         
+    
+  v_rk[0] = VX_INIT;        
+  v_rk[1] = VY_INIT;
+
+  //write to data file (position in [AU] and velocity in [m/s])
 
   out_LF = fopen("./output/leap_frog.dat","w");
-  //out_RK = fopen("./output/runge_kutta.dat","w");
+  out_RK = fopen("./output/runge_kutta.dat","w");
 
-  //fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
-  //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
-
-  fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
-  //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
+  fprintf(out_LF,"%lf %lf %lf %lf\n",r_lf[0]/D_SE,r_lf[1]/D_SE,v_lf[0],v_lf[1]);
+  fprintf(out_RK,"%lf %lf %lf %lf\n",r_rk[0]/D_SE,r_rk[1]/D_SE,v_rk[0],v_rk[1]);
 
 
   //=================================================================================================//
   //=========================================== integration =========================================//
   //=================================================================================================//
 
-  
-  //prefactor for the ODE
-
-  alpha = -G_CONST*M_SUN;
-  
+    
   //integration loop and writing output
 
   for(i=0; i<N_steps; i++){
 
+    //call integration functions
     
-    aux[0] = leap_frog(r_e, v_e, dt, alpha, 0, kepler_coeff);
-    aux[1] = leap_frog(r_e, v_e, dt, alpha, 1, kepler_coeff);
+    leap_frog(r_lf, v_lf, dt, kepler_coeff);
+    RK4(r_rk, v_rk, dt, kepler_coeff);
 
-    r_e[0] = aux[0];
-    r_e[1] = aux[1];
+    //write position in [AU] and velocity in [m/s] 
     
-    //fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
-    //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
-
-    fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
-    //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
+    fprintf(out_LF,"%lf %lf %lf %lf\n",r_lf[0]/D_SE,r_lf[1]/D_SE,v_lf[0],v_lf[1]);
+    fprintf(out_RK,"%lf %lf %lf %lf\n",r_rk[0]/D_SE,r_rk[1]/D_SE,v_rk[0],v_rk[1]);
     
-
   } //for(i)
 
 
+  //end timing and print result
+
+  cpu_end = clock();
+
+  fprintf(stderr,"\n The time it took for the CPU is: %.6f [ms] \n",1000.*(cpu_end - cpu_start)/CLOCKS_PER_SEC);
+  
+
+  
   //close files
   
   fclose(out_LF);
-  //fclose(out_RK);
+  fclose(out_RK);
   
 } //main

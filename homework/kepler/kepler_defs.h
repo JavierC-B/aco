@@ -15,6 +15,8 @@
 #define VX_INIT 0                               // m/s
 #define VY_INIT sqrt(G_CONST*M_SUN/D_SE)        // m/s
 
+#define PREFACT -G_CONST*M_SUN                  //to speed up
+
 #define mod(x,y) sqrt((x)*(x) + (y)*(y))
 #define pow3(x) ((x)*(x)*(x))
 
