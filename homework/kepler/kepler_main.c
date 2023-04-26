@@ -8,35 +8,15 @@
 #include <omp.h>
 #include <time.h>
 
+//useful definitions
 
-//=================================================================================================//
-//======================================= useful definitions ======================================//
-//=================================================================================================//
+#include "kepler_defs.h"
 
-
-#define G_CONST    6.6726E-11               // m^3/kg/s^2
-#define M_SUN      1.989E30                 // kg
-#define M_EARTH    5.973E24                 // kg
-#define D_SE       1.496E11                 // m
-
-#define X_INIT D_SE
-#define Y_INIT 0
-#define VX_INIT 0
-#define VY_INIT sqrt(G_CONST*M_SUN/D_SE)
-
-#define mod(x,y) sqrt((x)*(x) + (y)*(y))
-#define pow3(x) ((x)*(x)*(x))
-
-
-//=================================================================================================//
-//===================================== functions and utilities ===================================//
-//=================================================================================================//
-
+//functions and utilities
 
 #include "my.h"
+#include "kepler_functs.h"
 
-double * kepler_coeff(double *, double);
-void leap_frog(double*, double*, double, double, double* (*kepler_coeff)(double*, double));
 
 
 void main(int argc, char **argv)
@@ -54,6 +34,7 @@ void main(int argc, char **argv)
   double alpha;               //prefactor of the rhs
   double r_e[2];              //to store the 2 position dimensions (0 -> x | 1 -> y)
   double v_e[2];              //to store the 2 velocity dimensions (0 -> v_x | 1 -> v_y)
+  double aux[2];              //to help with the integration syntax
   double dt;                  //time step between each integration
   double t_final;             //final time at which integration stops
 
@@ -69,7 +50,7 @@ void main(int argc, char **argv)
 
   //start timing
 
-  wt_start = time(NULL);
+  //wt_start = time(NULL);
 
   //how to execute
 
@@ -113,14 +94,19 @@ void main(int argc, char **argv)
   out_LF = fopen("./output/leap_frog.dat","w");
   out_RK = fopen("./output/runge_kutta.dat","w");
 
-  fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
-  fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
+  //fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
+  //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
+
+  fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
+  //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
 
 
   //=================================================================================================//
   //=========================================== integration =========================================//
   //=================================================================================================//
 
+  
+  //prefactor for the ODE
 
   alpha = -G_CONST*M_SUN;
   
@@ -129,10 +115,17 @@ void main(int argc, char **argv)
   for(i=0; i<N_steps; i++){
 
     
-    leap_frog(r_e,v_e,dt,alpha,kepler_coeff);
+    aux[0] = leap_frog(r_e, v_e, dt, alpha, 0, kepler_coeff);
+    aux[1] = leap_frog(r_e, v_e, dt, alpha, 1, kepler_coeff);
 
-    fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
-    fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
+    r_e[0] = aux[0];
+    r_e[1] = aux[1];
+    
+    //fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
+    //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
+
+    fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
+    //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0],r_e[1],v_e[0],v_e[1]);
     
 
   } //for(i)
@@ -144,49 +137,3 @@ void main(int argc, char **argv)
   fclose(out_RK);
   
 } //main
-
-
-double *kepler_coeff(double *pos, double prefact){
-
-  //if((dim != 0) && (dim != 1)){
-  //
-  //  fprintf(stderr,"\n\nError calling double kepler_coeff(double*,double,int) function...\n\n");
-  //  fprintf(stderr,"Integer must be 0 (x-dimension) or 1 (y-dimension)\n\n");
-  //  fprintf(stderr,"Aborting now...");
-  //
-  //  exit(1);
-  //
-  //}
-
-  double *aux;
-
-  aux = (double *) my_calloc(2,sizeof(double));
-
-  aux[0] = prefact*pos[0]/pow3(mod(pos[0],pos[1])); 
-  aux[1] = prefact*pos[1]/pow3(mod(pos[0],pos[1]));
-  
-  return(aux);
-  
-} //kepler_coeff
-
-
-void leap_frog(double *pos, double *veloc, double dt, double prefact, double* (*kepler_coeff)(double*,double)){
-
-  double *coeff;
-  double aux[2];
-
-  coeff = (double *) my_calloc(2,sizeof(double));
-
-  coeff = kepler_coeff(pos, prefact);
-
-  aux[0] = pos[0] + 0.5*dt*veloc[0];
-  aux[1] = pos[1] + 0.5*dt*veloc[1];
-
-  veloc[0] = veloc[0] + dt*coeff[0];
-  veloc[1] = veloc[1] + dt*coeff[1];
-
-  pos[0] = aux[0] + 0.5*dt*veloc[0];
-  pos[1] = aux[1] + 0.5*dt*veloc[1];
-
-
-} //leap_frog
