@@ -92,7 +92,7 @@ void main(int argc, char **argv)
   //write to data file (position in [AU] and velocity in [km/s])
 
   out_LF = fopen("./output/leap_frog.dat","w");
-  out_RK = fopen("./output/runge_kutta.dat","w");
+  //out_RK = fopen("./output/runge_kutta.dat","w");
 
   //fprintf(out_LF,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
   //fprintf(out_RK,"%lf %lf %lf %lf\n",r_e[0]/D_SE,r_e[1]/D_SE,v_e[0]/1000,v_e[1]/1000);
@@ -134,6 +134,6 @@ void main(int argc, char **argv)
   //close files
   
   fclose(out_LF);
-  fclose(out_RK);
+  //fclose(out_RK);
   
 } //main

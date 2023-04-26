@@ -39,17 +39,18 @@ double kepler_coeff(double *pos, double prefact, int dim){
 
 double leap_frog(double *pos, double *veloc, double dt, double prefact, int dim, double (*kepler_coeff)(double*, double, int)){
 
-  double aux;
+  double aux[2];
   double coeff;
 
-  coeff = kepler_coeff(pos, prefact, dim);
+  
+  aux[0] = pos[0] + 0.5*dt*veloc[0];
+  aux[1] = pos[1] + 0.5*dt*veloc[1];
 
-    
-  aux = pos[dim] + 0.5*dt*veloc[dim];
+  coeff = kepler_coeff(aux, prefact, dim);
   
   veloc[dim] = veloc[dim] + dt*coeff;   //changes veloc[dim] in main
 
-  return(aux + 0.5*dt*veloc[dim]);
+  return(aux[dim] + 0.5*dt*veloc[dim]);
 
 } //leap_frog
 
