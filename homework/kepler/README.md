@@ -10,12 +10,12 @@
              TO RUN TYPE:
 	     
 
-             $ ./mandelbrot_main 5 48
+             $ ./kepler_main 5 48
 
 
              where:
 
-		5  = NUMBER_OF_ORBITS / NUMBER_OF_YEARS
+		5  = NUMBER_OF_ORBITS // NUMBER_OF_YEARS
 	        48 = NUMBER_OF_TIME_STEPS 
 
 
@@ -29,3 +29,15 @@
 
 
 	     A .pdf plot will be generated at ./output/kepler_plot.pdf
+
+
+	     ================================================================
+
+
+	     ONE CAN ALSO TYPE
+
+	     $ chmod +x run.sh
+
+	     AND COMPILE, RUN AND GENERATE THE PLOT BY TYPING
+
+	     $ ./run.sh 5 48
