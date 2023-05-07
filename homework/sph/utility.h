@@ -78,7 +78,7 @@ static int iminarg1,iminarg2;
 #define IMIN(a,b) (iminarg1=(a),iminarg2=(b),(iminarg1) < (iminarg2) ?\ (iminarg1) : (iminarg2)) 
 
 //#define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a)) 
-#define SIGN(x)   (x > 0) ? 1 : ((x < 0) ? -1 : 0)
+#define SIGN(x)   ((x) > 0) ? 1. : (((x) < 0) ? -1. : 0.)
 
 #if defined(__STDC__) || defined(ANSI) || defined(NRANSI) /* ANSI */
 

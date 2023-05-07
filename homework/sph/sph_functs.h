@@ -21,6 +21,7 @@ struct particle{
   double v;                  // velocity
   double rho;                // density
   double e;                  // energy
+  double P;                  // pressure
 			        
   double h;                  // sph distance
 			        
@@ -37,6 +38,18 @@ struct particle{
 
 
 
+// get sign of x
+
+
+int sign(double);
+
+
+// define derivative of the kernel W_ij
+
+
+double d_Wij(double, double, double);
+
+
 // set particles' initial conditions
 
 
@@ -49,13 +62,18 @@ void initial_conditions(struct particle *, double);
 void set_h(struct particle *);
 
 
-/*
 // get sph coefficients for integration
 
 
-void get_SPH_coefficients();
+void get_SPH_coefficients(struct particle *, double (*d_Wij)(double, double, double));
 
 
+// perform integration step (Euler)
+
+
+void integration_Euler(struct particle *, double);
+
+/*
 // write output to files
 
 

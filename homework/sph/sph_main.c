@@ -38,8 +38,8 @@ void main(int argc, char **argv)
 
   time_t cpu_start, cpu_end;          // to keep track of wall-time
 
-  int aux;
 
+  
   //*********************************************************************************************
   //                                        preambles      
   //*********************************************************************************************
@@ -87,7 +87,7 @@ void main(int argc, char **argv)
 
   initial_conditions(p, dx);
 
-  /* check
+  /*======= check
 
   for(int j = 0; j < NPART; j++){
 
@@ -95,7 +95,7 @@ void main(int argc, char **argv)
 
   }
 
-  */
+   ======== */
 
   // integration loop
 
@@ -105,23 +105,24 @@ void main(int argc, char **argv)
 
     set_h(p);
 
-    aux = ceil(NPART/2);
-    fprintf(stderr,"\n\n %lf", p[aux].h);
 
-  } // i
+    // get coefficients for integration
 
+    get_SPH_coefficients(p, d_Wij);
+    
 
+    // integration step
 
+    integration_Euler(p, dt);
+    
+  } // (i)
 
-
+  
   // end timing and print result
 
   cpu_end = clock();
 
   fprintf(stderr,"\n\n The time it took for the CPU is: %.6f [ms] \n",1000.*(cpu_end - cpu_start)/CLOCKS_PER_SEC);
-
-
-
 
 
   

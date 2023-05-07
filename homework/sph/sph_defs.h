@@ -7,9 +7,9 @@
 #define SPH_DEFS_INCLUDED
 
 
-#define NPART         101                    // number of sph particles
+#define NPART         2001                   // number of sph particles
 #define NSTEPS        500                    // number of integration steps
-#define NSPH          5                      // number of nearest neighbours sph particles
+#define NSPH          25                     // number of nearest neighbours sph particles
 #define T_END         0.05                   // ending time of integration in arbitrary units
 		      		             
 #define GAMMA         (7./5.)                // adiabatic coefficient for blast wave
