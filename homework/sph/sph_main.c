@@ -78,25 +78,21 @@ void main(int argc, char **argv)
 
 
   //*********************************************************************************************
-  //                                       integration      
+  //                                   integration and output      
   //*********************************************************************************************
 
-
+  fprintf(stderr,"\n");
   
   // set initial conditions
 
   initial_conditions(p, dx);
 
-  /*======= check
 
-  for(int j = 0; j < NPART; j++){
+  // write initial conditions
 
-    fprintf(stderr,"\n\n %d %lf %lf %lf %lf %lf", j, p[j].m, p[j].x, p[j].v, p[j].rho, p[j].e);
+  write_output_file(p, 0);
 
-  }
-
-   ======== */
-
+   
   // integration loop
 
   for(i = 0; i < NSTEPS; i++){
@@ -114,9 +110,30 @@ void main(int argc, char **argv)
     // integration step
 
     integration_Euler(p, dt);
+
+
+    // write output every NOUT steps
+
+    if(((i + 1) % NOUT) == 0){
+
+      //write_output_file(p,i+1);
+
+      fprintf(stderr,"%lf %lf %lf %lf\n", p[40].x, p[40].rho, p[40].e, p[40].P);
+      
+    }
+
+    else
+      continue;
     
   } // (i)
 
+
+
+  //*********************************************************************************************
+  //                                         final things      
+  //*********************************************************************************************
+
+  
   
   // end timing and print result
 

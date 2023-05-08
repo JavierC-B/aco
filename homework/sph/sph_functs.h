@@ -73,12 +73,12 @@ void get_SPH_coefficients(struct particle *, double (*d_Wij)(double, double, dou
 
 void integration_Euler(struct particle *, double);
 
-/*
+
 // write output to files
 
 
-void write_output_file();
-*/
+void write_output_file(struct particle *, int);
+
 
 
 #endif

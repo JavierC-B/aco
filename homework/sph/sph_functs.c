@@ -287,14 +287,69 @@ void integration_Euler(struct particle *p, double dt){
 } // integration_Euler
 
 
-/*
+
 //--------------------------- write output to files ---------------------------//
 
 
 
-void write_output_file(){
+void write_output_file(struct particle *p, int step){
+
+    
+  // variables
+  
+  int N_CHAR;                                                  // length of string
+
+  // we need N_CHAR for string length
+  
+  if(step == 0){
+
+    N_CHAR = 5;
+    
+  }
+  
+  else{
+    
+    N_CHAR = (int) ((ceil(log10(step))+5)*sizeof(char));
+    
+  }
 
   
+  char id[N_CHAR];                                             // to convert int to string
+  char aux[15] = "./output/step_";                             // first part of file name
+  char fname[100] = {0};                                       // string with full file name
+  
+  FILE *fp;                                                    // to write data
+  
 
+  // prepare the data files names
+
+  sprintf(id, "%d.dat", step);
+  snprintf(fname, sizeof(fname), "%s%s", aux, id);
+
+
+  // open files to write
+
+  fp = my_fopen(fname,"wb");
+
+  
+  // write to files
+
+  for (int i = 0; i < NPART; i++){
+
+    fwrite(&(p[i].x), sizeof(double), 1, fp);
+    fwrite(" ", 1, 1, fp);
+    fwrite(&(p[i].rho), sizeof(double), 1, fp);
+    fwrite(" ", 1, 1, fp);
+    fwrite(&(p[i].e), sizeof(double), 1, fp);
+    fwrite(" ", 1, 1, fp);
+    fwrite(&(p[i].P), sizeof(double), 1, fp);
+    fwrite("\n", sizeof(char), 1, fp);
+    
+  } // (i)
+  
+  
+  fclose(fp);
+
+    
 } //write_output_file
-*/
+

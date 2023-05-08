@@ -9,6 +9,7 @@
 
 #define NPART         2001                   // number of sph particles
 #define NSTEPS        500                    // number of integration steps
+#define NOUT          100                    // output is written every NOUT steps
 #define NSPH          25                     // number of nearest neighbours sph particles
 #define T_END         0.05                   // ending time of integration in arbitrary units
 		      		             
