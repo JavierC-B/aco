@@ -329,24 +329,29 @@ void write_output_file(struct particle *p, int step){
 
   // open files to write
 
-  fp = my_fopen(fname,"wb");
-
+  //fp = my_fopen(fname,"wb");
+  fp = my_fopen(fname, "w");
+  
   
   // write to files
 
   for (int i = 0; i < NPART; i++){
 
-    fwrite(&(p[i].x), sizeof(double), 1, fp);
-    fwrite(" ", 1, 1, fp);
-    fwrite(&(p[i].rho), sizeof(double), 1, fp);
-    fwrite(" ", 1, 1, fp);
-    fwrite(&(p[i].e), sizeof(double), 1, fp);
-    fwrite(" ", 1, 1, fp);
-    fwrite(&(p[i].P), sizeof(double), 1, fp);
-    fwrite("\n", sizeof(char), 1, fp);
+    //fwrite(&(p[i].x), sizeof(double), 1, fp);
+    //fwrite(" ", 1, 1, fp);
+    //fwrite(&(p[i].rho), sizeof(double), 1, fp);
+    //fwrite(" ", 1, 1, fp);
+    //fwrite(&(p[i].e), sizeof(double), 1, fp);
+    //fwrite(" ", 1, 1, fp);
+    //fwrite(&(p[i].P), sizeof(double), 1, fp);
+    //fwrite("\n", sizeof(char), 1, fp);
+
+    fprintf(fp,"%lf %lf %lf %lf\n", p[i].x, p[i].rho, p[i].e, p[i].P);
     
   } // (i)
-  
+
+
+  // close file
   
   fclose(fp);
 

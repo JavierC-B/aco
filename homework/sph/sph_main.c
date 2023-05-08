@@ -89,10 +89,10 @@ void main(int argc, char **argv)
 
 
   // write initial conditions
-
+  
   write_output_file(p, 0);
 
-   
+
   // integration loop
 
   for(i = 0; i < NSTEPS; i++){
@@ -116,10 +116,8 @@ void main(int argc, char **argv)
 
     if(((i + 1) % NOUT) == 0){
 
-      //write_output_file(p,i+1);
-
-      fprintf(stderr,"%lf %lf %lf %lf\n", p[40].x, p[40].rho, p[40].e, p[40].P);
-      
+      write_output_file(p,i+1);
+   
     }
 
     else
@@ -142,5 +140,4 @@ void main(int argc, char **argv)
   fprintf(stderr,"\n\n The time it took for the CPU is: %.6f [ms] \n",1000.*(cpu_end - cpu_start)/CLOCKS_PER_SEC);
 
 
-  
 } // main

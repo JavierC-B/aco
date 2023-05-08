@@ -18,6 +18,5 @@
 #define E_CENTRAL     1                      // initial energy of central particle
 #define E_REST        1e-5                   // initial energy of all other particles
 
-//#define index(i,j)    (i)*NPART + (j)        // to access 1D arrays like 2D
 
 #endif
