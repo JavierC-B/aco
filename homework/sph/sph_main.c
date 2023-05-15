@@ -96,7 +96,7 @@ void main(int argc, char **argv)
   // integration loop
 
   for(i = 0; i < NSTEPS; i++){
-
+    
     // find sph parameter h
 
     set_h(p);
@@ -115,6 +115,8 @@ void main(int argc, char **argv)
     // write output every NOUT steps
 
     if(((i + 1) % NOUT) == 0){
+
+      fprintf(stderr,"Step %d out of %d\n", i+1, NSTEPS);
 
       write_output_file(p,i+1);
    
@@ -137,7 +139,7 @@ void main(int argc, char **argv)
 
   cpu_end = clock();
 
-  fprintf(stderr,"\n\n The time it took for the CPU is: %.6f [ms] \n",1000.*(cpu_end - cpu_start)/CLOCKS_PER_SEC);
+  fprintf(stderr,"\n\n The time it took for the CPU is: %.4f [s] \n", (double) (cpu_end - cpu_start)/CLOCKS_PER_SEC);
 
 
 } // main

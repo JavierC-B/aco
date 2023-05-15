@@ -89,8 +89,14 @@ void initial_conditions(struct particle *p, double dx){
   int i;           // loop couter
 
 
-  // loop over all particles
+  // parallelize code
 
+  omp_set_num_threads(omp_get_num_threads());
+
+  
+  // loop over particles (i)
+
+#pragma omp parallel for private(i) shared(p) schedule(static)
   for(i = 0; i < NPART; i++){
 
     p[i].m   = 1.;                                  // mass
